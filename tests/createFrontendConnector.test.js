@@ -1,13 +1,15 @@
 /* globals require, jest, expect, describe, it */
 const createFrontendConnector = require('../lib/createFrontendConnector');
 
-// A simple jest connector
-const jestConnector = {
-  create: jest.fn(() => Promise.resolve({ data: 'create OK' })),
-  read: jest.fn(() => Promise.resolve({ data: 'read OK' })),
-  update: jest.fn(() => Promise.resolve({ data: 'update OK' })),
-  delete: jest.fn(() => Promise.resolve({ data: 'delete OK' })),
-};
+// Creates a simple jest connector
+function createJestConnector() {
+  return {
+    create: jest.fn(() => Promise.resolve({ data: 'create OK' })),
+    read: jest.fn(() => Promise.resolve({ data: 'read OK' })),
+    update: jest.fn(() => Promise.resolve({ data: 'update OK' })),
+    delete: jest.fn(() => Promise.resolve({ data: 'delete OK' })),
+  };
+}
 
 // This function create a middleware function
 const createMiddleware = (id => jest.fn(
@@ -45,32 +47,40 @@ describe('Interface', () => {
 
   it('creates non-implemented crud methods', () => {
     const c = createFrontendConnector();
-    expect(c.create).toThrow(/not implemented/);
-    expect(c.read).toThrow(/not implemented/);
-    expect(c.update).toThrow(/not implemented/);
-    expect(c.delete).toThrow(/not implemented/);
+    const reject = jest.fn((error) => {
+      expect(error).toMatch(/not implemented/);
+    });
+
+    const p1 = c.create().catch(reject);
+    const p2 = c.read().catch(reject);
+    const p3 = c.update().catch(reject);
+    const p4 = c.delete().catch(reject);
+
+    return Promise.all([p1, p2, p3, p4]).then(() => {
+      expect(reject).toHaveBeenCalledTimes(4);
+    });
   });
 });
 
 describe('Chaining', () => {
   it('passes request correctly', () => {
+    const jestConnector = createJestConnector();
     const c = createFrontendConnector(jestConnector);
-    const resolve = jest.fn();
     const req = {};
 
-    const p1 = c.create(req).then(resolve).then(() => {
+    const p1 = c.create(req).then(() => {
       expect(jestConnector.create).toHaveBeenCalledWith(req);
     });
 
-    const p2 = c.read(req).then(resolve).then(() => {
+    const p2 = c.read(req).then(() => {
       expect(jestConnector.read).toHaveBeenCalledWith(req);
     });
 
-    const p3 = c.update(req).then(resolve).then(() => {
+    const p3 = c.update(req).then(() => {
       expect(jestConnector.update).toHaveBeenCalledWith(req);
     });
 
-    const p4 = c.delete(req).then(resolve).then(() => {
+    const p4 = c.delete(req).then(() => {
       expect(jestConnector.delete).toHaveBeenCalledWith(req);
     });
 
@@ -78,6 +88,7 @@ describe('Chaining', () => {
   });
 
   it('returns reponse data', () => {
+    const jestConnector = createJestConnector();
     const c = createFrontendConnector(jestConnector);
     const resolve = jest.fn();
 
@@ -103,6 +114,7 @@ describe('Chaining', () => {
 
 describe('Middleware', () => {
   it('includes middleware correctly', () => {
+    const jestConnector = createJestConnector();
     const c = createFrontendConnector(jestConnector).use(createMiddleware('1'));
     const resolve = jest.fn();
 
@@ -126,6 +138,7 @@ describe('Middleware', () => {
   });
 
   it('orders middleware correctly', () => {
+    const jestConnector = createJestConnector();
     const c = createFrontendConnector(jestConnector)
     .use(createMiddleware('1'))
     .use(createMiddleware('2'));
@@ -149,6 +162,62 @@ describe('Middleware', () => {
     });
 
     return Promise.all([p1, p2, p3, p4]);
+  });
+
+  it('allows for partial middleware', () => {
+    const empty = () => ({});
+    const jestConnector = createJestConnector();
+    const c = createFrontendConnector(jestConnector).use(empty);
+    const req = {};
+
+    const p1 = c.create(req).then(() => {
+      expect(jestConnector.create).toHaveBeenCalledWith(req);
+    });
+
+    const p2 = c.read(req).then(() => {
+      expect(jestConnector.read).toHaveBeenCalledWith(req);
+    });
+
+    const p3 = c.update(req).then(() => {
+      expect(jestConnector.update).toHaveBeenCalledWith(req);
+    });
+
+    const p4 = c.delete(req).then(() => {
+      expect(jestConnector.delete).toHaveBeenCalledWith(req);
+    });
+
+    return Promise.all([p1, p2, p3, p4]);
+  });
+
+  it('completeConnector() preserves the object and its method bindings', () => {
+    let counter;
+
+    // This middleware counts each create call. It therefore implements only the create method
+    const countCreateCalls = (next) => {
+      const Counter = function () {
+        this.nTimes = 0;
+      };
+      Counter.prototype.create = function (req) { this.nTimes += 1; return next.create(req); };
+      counter = new Counter();
+      return counter;
+    };
+
+    const jestConnector = createJestConnector();
+    const c = createFrontendConnector(jestConnector).use(countCreateCalls);
+
+    const p1 = c.create();
+    const p2 = c.read();    // Not counted
+    const p3 = c.update();  // Not counted
+    const p4 = c.delete();  // Not counted
+    const p5 = c.create();
+
+    return Promise.all([p1, p2, p3, p4, p5]).then(() => {
+      expect(counter.nTimes).toBe(2);
+      expect(jestConnector.create).toHaveBeenCalledTimes(2);
+      expect(jestConnector.read).toHaveBeenCalledTimes(1);
+      expect(jestConnector.update).toHaveBeenCalledTimes(1);
+      expect(jestConnector.delete).toHaveBeenCalledTimes(1);
+    });
   });
 });
 

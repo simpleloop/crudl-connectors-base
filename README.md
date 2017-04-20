@@ -50,16 +50,21 @@ Middleware is a function that takes the next connector as its argument and retur
 // idName is the backend specific name of the id field
 function consolidateIDs(idName) {
     return (next) => {
-        const renameKey: (reqOrRes, from, to) => { ... } // Returns a request or response with a renamed key
+        // Returns a request or response with a renamed key in the data
+        const rename: (reqOrRes, from, to) => { ... }
+
         return {
-            create: (req, ...params) => next
-                .create(rename(req, 'id', idName), ...params)
+            create: req => next
+                .create(rename(req, 'id', idName))
                 .then(res => rename(res, idName, 'id')),
-            update: (req, ...params) => next
-                .update(rename(req, 'id', idName), ...params)
-                .then(res => rename(res, idName, 'id')),// Read requires renaming only of the response
-            read: (req, ...params) => next
-                .read(req, ...params)
+
+            update: req => next
+                .update(rename(req, 'id', idName))
+                .then(res => rename(res, idName, 'id')),
+
+            // Read requires renaming only of the response
+            read: req => next
+                .read(req)
                 .then(res => rename(res, idName, 'id')),
 
             // delete does not require any renaming
