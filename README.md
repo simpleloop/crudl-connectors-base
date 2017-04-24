@@ -1,31 +1,3 @@
-## Usage Example
-
-```js
-const { createFrontendConnector, createBackendConnector } = require('crudl-connectors-base');
-const { patternedURL, crudToHttp } = require('crudl-connectors-base/lib/middleware');
-
-const blogs = createFrontendConnector(createBackendConnector({ baseURL: 'localhost:3000' }))
-	.use(crudToHttp()) // Translates crud methods to http methods
-	.use(patternedURL('/api/blogs/')) // Resolves and sets the request url
-
-const blogEntry = createFrontendConnector(createBackendConnector({ baseURL: 'localhost:3000' }))
-	.use(crudToHttp())
-	.use(patternedURL('/api/blogs/:id/'))
-
-blogs.read().then(result => console.log(result)); // [ { id: 1, ... }, { id: 2, ... }, ...]
-blogEntry(1).read().then(entry => console.log(entry);) // { id: 1, title: "How to write middleware", ... }
-
-// Suppose handleSubmit is a redux-form onSubmit handler:
-function handleSubmit(data) {
-    return blogs.create({ data })
-    .catch(error => {
-        if (error instanceof ValidationError) {
-            throw new SubmissionError(error)
-        }
-    })
-}
-```
-
 ## Structure
 
 A connector is an object that provides the crud methods (create, read, update, and delete) that accept requests and return promises, which in turn either resolve to responses or reject with an error. Because the crud methods return promises, they can be chained.
@@ -33,6 +5,37 @@ A connector is an object that provides the crud methods (create, read, update, a
 The simplest configuration of a connector is a backend-frontend pair. The backend connector translates the invoked methods and the passed requests into ajax calls. Using the frontend connector's `use` method, this basic pair can be extended with middleware.
 
 Connectors can be parametrized.
+
+## Usage Examples
+
+Using just the basic frontend-backend pair you can swiftly create a functioning connector:
+
+```js
+const { createFrontendConnector, createBackendConnector } = require('crudl-connectors-base');
+
+let c = createFrontendConnector(createBackendConnector({ baseURL: 'localhost:3000/api/v1/' }));
+c.create({ url: '/users/', httpMethod: 'post', data: { firstName: 'Jane' }});
+```
+
+By using middleware, you can customize your connectors and make them less verbose. For example the `crudToHttp` middleware maps the crud functions to the http methods, so that 'create' will result to 'post', 'read' to 'get', etc.
+
+```js
+const mapping = { create: 'post', read: 'get', update: 'patch', delete: 'delete' };
+c = c.use(crudToHttp(mapping));
+c.update({ url: '/users/1', data: { lastName: 'Doe' } });
+c.read({ url: '/users/1/' }) // { id: 1, firstName: 'Jane', lastName: 'Doe' }
+}
+```
+
+You can bind connectors to specific endpoints using the `patternedURL` middleware. This middleware resolves the url pattern against the parameters passed to the connector.
+
+```js
+let user = c.use(patternedURL('/users/:id'));
+let blogEntry = c.use(patternedURL('/blogs/:blogId'));
+
+user(1).read() // { id: 1, firstName: 'Jane', lastName: 'Doe' }
+blogEntry(12).read() // { id: 12, userId: 1, title: 'How to write middleware' }
+```
 
 ## Requests and Responses
 
