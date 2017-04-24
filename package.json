@@ -15,7 +15,11 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
-    "jest": "^19.0.2"
+    "jest": "^19.0.2",
+    "sinon": "^2.1.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "axios": "^0.16.1",
+    "path-to-regexp": "^1.7.0"
+  }
 }
