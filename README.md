@@ -1,18 +1,23 @@
 ## Usage Example
 
 ```js
-const { createDRFConnector, ValidationError } = require('crudl-connectors-drf');
+const { createFrontendConnector, createBackendConnector } = require('crudl-connectors-base');
+const { patternedURL, crudToHttp } = require('crudl-connectors-base/lib/middleware');
 
-const connector = createDRFConnector(`/api/:collection(/:id)`)
-.use(transformErrors)
+const blogs = createFrontendConnector(createBackendConnector({ baseURL: 'localhost:3000' }))
+	.use(crudToHttp()) // Translates crud methods to http methods
+	.use(patternedURL('/api/blogs/')) // Resolves and sets the request url
 
-connector('blogs').read().then(result => console.log(result)); // [ { id: 1, ... }, { id: 2, ... }, ...]
+const blogEntry = createFrontendConnector(createBackendConnector({ baseURL: 'localhost:3000' }))
+	.use(crudToHttp())
+	.use(patternedURL('/api/blogs/:id/'))
 
-connector('blogs', 1).read().then( entry => console.log(entry); ) // { id: 1, title: "How to write middleware", ... }
+blogs.read().then(result => console.log(result)); // [ { id: 1, ... }, { id: 2, ... }, ...]
+blogEntry(1).read().then(entry => console.log(entry);) // { id: 1, title: "How to write middleware", ... }
 
 // Suppose handleSubmit is a redux-form onSubmit handler:
 function handleSubmit(data) {
-    return connector('blogs').create({ data })
+    return blogs.create({ data })
     .catch(error => {
         if (error instanceof ValidationError) {
             throw new SubmissionError(error)
