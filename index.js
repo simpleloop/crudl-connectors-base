@@ -1,9 +1,7 @@
-const createFrontendConnector = require('./lib/createFrontendConnector');
-const createBackendConnector = require('./lib/createBackendConnector');
-const consumeParams = require('./lib/consumeParams');
+/* eslint-disable global-require */
 
 module.exports = {
-  createFrontendConnector,
-  createBackendConnector,
-  consumeParams,
+  createFrontendConnector: require('./lib/createFrontendConnector'),
+  createBackendConnector: require('./lib/createBackendConnector'),
+  consumeParams: require('./lib/consumeParams'),
 };
