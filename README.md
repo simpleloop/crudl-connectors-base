@@ -22,9 +22,9 @@ By using middleware, you can customize your connectors and make them less verbos
 ```js
 const mapping = { create: 'post', read: 'get', update: 'patch', delete: 'delete' };
 c = c.use(crudToHttp(mapping));
+
 c.update({ url: '/users/1', data: { lastName: 'Doe' } });
 c.read({ url: '/users/1/' }) // { id: 1, firstName: 'Jane', lastName: 'Doe' }
-}
 ```
 
 You can bind connectors to specific endpoints using the `patternedURL` middleware. This middleware resolves the url pattern against the parameters passed to the connector.
