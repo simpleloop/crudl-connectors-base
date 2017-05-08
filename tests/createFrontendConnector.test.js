@@ -12,22 +12,26 @@ function createJestConnector() {
 }
 
 // This function create a middleware function
-const createMiddleware = (id => jest.fn(
-  next => ({
-    create: jest.fn(req => next.create(req).then(
-      res => Promise.resolve({ data: `mw${id}(${res.data})` }),
-    )),
-    read: jest.fn(req => next.read(req).then(
-      res => Promise.resolve({ data: `mw${id}(${res.data})` }),
-    )),
-    update: jest.fn(req => next.update(req).then(
-      res => Promise.resolve({ data: `mw${id}(${res.data})` }),
-    )),
-    delete: jest.fn(req => next.delete(req).then(
-      res => Promise.resolve({ data: `mw${id}(${res.data})` }),
-    )),
-  }),
-));
+const createMiddleware = ((id) => {
+  const mw = jest.fn(
+    next => ({
+      create: jest.fn(req => next.create(req).then(
+        res => Promise.resolve({ data: `mw${id}(${res.data})` }),
+      )),
+      read: jest.fn(req => next.read(req).then(
+        res => Promise.resolve({ data: `mw${id}(${res.data})` }),
+      )),
+      update: jest.fn(req => next.update(req).then(
+        res => Promise.resolve({ data: `mw${id}(${res.data})` }),
+      )),
+      delete: jest.fn(req => next.delete(req).then(
+        res => Promise.resolve({ data: `mw${id}(${res.data})` }),
+      )),
+    }),
+  );
+  Object.defineProperty(mw, 'name', { value: `mw${id}` });
+  return mw;
+});
 
 describe('Interface', () => {
   it('creates correct interface', () => {
