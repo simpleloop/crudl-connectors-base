@@ -250,4 +250,33 @@ describe('Parameters', () => {
 
     return Promise.all([p1, p2, p3, p4]);
   });
+
+  it('handles partial parametrization', () => {
+    // Create a connector that checks the request parameters
+    const c = createFrontendConnector({
+      create: (req) => {
+        expect(req.params).toEqual([1, 2, 3]);
+        return Promise.resolve({});
+      },
+      read: (req) => {
+        expect(req.params).toEqual([1, 2, 3]);
+        return Promise.resolve({});
+      },
+      update: (req) => {
+        expect(req.params).toEqual([1, 2, 3]);
+        return Promise.resolve({});
+      },
+      delete: (req) => {
+        expect(req.params).toEqual([1, 2, 3]);
+        return Promise.resolve({});
+      },
+    });
+
+    const p1 = c(1)(2, 3).create({});
+    const p2 = c(1)(2, 3).read({});
+    const p3 = c(1)(2, 3).update({});
+    const p4 = c(1)(2, 3).delete({});
+
+    return Promise.all([p1, p2, p3, p4]);
+  });
 });

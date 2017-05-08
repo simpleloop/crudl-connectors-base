@@ -37,6 +37,18 @@ user(1).read() // { id: 1, firstName: 'Jane', lastName: 'Doe' }
 blogEntry(12).read() // { id: 12, userId: 1, title: 'How to write middleware' }
 ```
 
+Partial parametrization is also possible:
+
+```js
+let detail = c.use(patternedURL('/:collection/:id'));
+let user = detail('users') // The :collection is fixed to 'users' but :id is still open
+let blogEntry = detail('blogs') // The :collection is fixed to 'blogs' but :id is still open
+
+user(1).read()
+blogEntry(12).delete()
+```
+
+
 ## Requests and Responses
 
 The connectors achieve their task by transferring requests and responses between each other and amending them. The format of the request and response object is insofar open as connectors require only the `data` attribute to be present. Backend connectors may require more than that, and it's up to the application and the applied middleware to provide that.
