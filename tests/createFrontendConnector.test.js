@@ -283,4 +283,8 @@ describe('Parameters', () => {
 
     return Promise.all([p1, p2, p3, p4]);
   });
+
+  it('allows only for one frontend connector', () => {
+    expect(() => createFrontendConnector(createFrontendConnector({}))).toThrow(/Only one frontend connector/);
+  });
 });
