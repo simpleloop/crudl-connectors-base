@@ -10,6 +10,7 @@ describe('Backend Connector', () => {
     server.respondWith('POST', '/api/object/add/', 'post object');
     server.respondWith('PATCH', '/api/object/update/', 'patch object');
     server.respondWith('DELETE', '/api/object/delete/', 'delete object');
+    server.respondWith('POST', '/api/error/validation/', [400, {}, 'validation error']);
   });
 
   it('create works correctly', () => {
@@ -85,6 +86,15 @@ describe('Backend Connector', () => {
     return connector.read({ url: '/list/', httpMethod: 'get', headers: { 'user-token': 'Ok' } })
     .then((response) => {
       expect(response.status).toEqual(200);
+    });
+  });
+
+  it('handles validation error correctly', () => {
+    const connector = createBackendConnector();
+    return connector.create({ url: '/api/error/validation', httpMethod: 'post' })
+    .catch((response) => {
+      expect(response.status).toEqual(400);
+      expect(response.data).toEqual('validation error');
     });
   });
 });
