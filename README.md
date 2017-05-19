@@ -60,12 +60,12 @@ The frontend connector's crud methods do not resolve to 'responses', instead the
 You can extend the functionality of a connector with middleware:
 
 ```js
-const published = createFrontendConnector(createBackendConnector({ baseURL: 'localhost:3000/api/v1' }))
-.use(patternedURL('articles/'))
-.use(transformData('read', data => data.filter(item => item.published)))
+const published = createFrontendConnector(createBackendConnector())
+  .use(patternedURL('localhost:3000/api/articles/'))
+  .use(transformData('read', data => data.filter(item => item.published)))
 
 published.read().then((publishedArticles) => {
-	// ...
+  // ...
 });
 ```
 
@@ -73,23 +73,28 @@ Middleware is a function that takes the next connector as its argument and retur
 
 ```js
 // Creates a transformData middleware
+// methodRegExp: which methods should be transformed e.g. 'create|update'
 function transformData(methodRegExp, transformation = data => data) {
   const re = new RegExp(methodRegExp || '.*');
 
   // The middleware function
   return function transformDataMiddleware(next) {
-  function checkAndTransform(methodName) {
-    return req => next[methodName](req).then(res => (
-    re.test(methodName) ? Object.assign(res, { data: transformation(res.data) }) : res
-    ));
-  }
-
-  return {
-    create: checkAndTransform('create'),
-    read: checkAndTransform('read'),
-    update: checkAndTransform('update'),
-    delete: checkAndTransform('delete'),
-  };
+	// Checks if the call should be transformed. If yes, it applies the transformation
+	function checkAndTransform(methodName) {
+      return function(req) {
+	    return next[methodName](req).then(res => re.test(methodName)
+		    ? Object.assign(res, { data: transformation(res.data) })
+		    : res
+	    );
+	  };
+    }
+    // The middleware connector:
+    return {
+      create: checkAndTransform('create'),
+      read: checkAndTransform('read'),
+      update: checkAndTransform('update'),
+      delete: checkAndTransform('delete'),
+    };
   };
 }
 ```
