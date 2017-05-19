@@ -1,10 +1,10 @@
+A connector layer to access any API uniformly using CRUD methods
+
 ## Structure
 
-A connector is an object that provides the crud methods (create, read, update, and delete) that accept requests and return promises, which in turn either resolve to responses or reject with an error. Because the crud methods return promises, they can be chained.
+A connector is an object that provides crud methods (create, read, update, and delete). These methods accept requests and return promises, which in turn either resolve to responses or reject with an error. Because the crud methods return promises, they can be chained.
 
-The simplest configuration of a connector is a backend-frontend pair. The backend connector translates the invoked methods and the passed requests into ajax calls. Using the frontend connector's `use` method, this basic pair can be extended with middleware.
-
-Connectors can be parametrized.
+The simplest configuration of a connector is a backend-frontend pair. The backend connector translates the invoked methods and the passed requests into ajax calls. Using the frontend connector's `use` method, this basic pair can be extended with middleware. 
 
 ## Usage Examples
 
