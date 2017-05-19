@@ -4,7 +4,7 @@ A connector layer to access any API uniformly using CRUD methods
 
 A connector is an object that provides crud methods (create, read, update, and delete). These methods accept requests and return promises, which in turn either resolve to responses or reject with an error. Because the crud methods return promises, they can be chained.
 
-The simplest configuration of a connector is a backend-frontend pair. The backend connector translates the invoked methods and the passed requests into ajax calls. Using the frontend connector's `use` method, this basic pair can be extended with middleware. 
+The simplest configuration of a connector is a backend-frontend pair. The backend connector translates the invoked methods and the passed requests into ajax calls. Using the frontend connector's `use` method, this basic pair can be extended with middleware.
 
 ## Usage Examples
 
@@ -48,50 +48,50 @@ user(1).read()
 blogEntry(12).delete()
 ```
 
-
 ## Requests and Responses
 
 The connectors achieve their task by transferring requests and responses between each other and amending them. The format of the request and response object is insofar open as connectors require only the `data` attribute to be present. Backend connectors may require more than that, and it's up to the application and the applied middleware to provide that.
 
+The frontend connector's crud methods do not resolve to 'responses', instead they resolve to the response **data**. This is an important feature that makes the usage of connectors especially easy and intuitive. It keeps the response format transparent to the layers above connectors.
+
+
 ## Middleware
 
-The functionality of a connector can be extended using middleware:
+You can extend the functionality of a connector with middleware:
 
 ```js
-const c = createRESTConnector()
-.use(transformErrors)
-.use(transformData)
-.use(pagination)
+const published = createFrontendConnector(createBackendConnector({ baseURL: 'localhost:3000/api/v1' }))
+.use(patternedURL('articles/'))
+.use(transformData('read', data => data.filter(item => item.published)))
+
+published.read().then((publishedArticles) => {
+	// ...
+});
 ```
 
-Middleware is a function that takes the next connector as its argument and returns a new connector. Consider the following middleware for consolidating resource IDs to be called 'id':
+Middleware is a function that takes the next connector as its argument and returns a new connector. Consider the following middleware for transforming the response data:
 
 ```js
-// idName is the backend specific name of the id field
-function consolidateIDs(idName) {
-    return (next) => {
-        // Returns a request or response with a renamed key in the data
-        const rename: (reqOrRes, from, to) => { ... }
+// Creates a transformData middleware
+function transformData(methodRegExp, transformation = data => data) {
+  const re = new RegExp(methodRegExp || '.*');
 
-        return {
-            create: req => next
-                .create(rename(req, 'id', idName))
-                .then(res => rename(res, idName, 'id')),
+  // The middleware function
+  return function transformDataMiddleware(next) {
+  function checkAndTransform(methodName) {
+    return req => next[methodName](req).then(res => (
+    re.test(methodName) ? Object.assign(res, { data: transformation(res.data) }) : res
+    ));
+  }
 
-            update: req => next
-                .update(rename(req, 'id', idName))
-                .then(res => rename(res, idName, 'id')),
-
-            // Read requires renaming only of the response
-            read: req => next
-                .read(req)
-                .then(res => rename(res, idName, 'id')),
-
-            // delete does not require any renaming
-        }
-    }
+  return {
+    create: checkAndTransform('create'),
+    read: checkAndTransform('read'),
+    update: checkAndTransform('update'),
+    delete: checkAndTransform('delete'),
+  };
+  };
 }
-
-// And it can be used like this:
-const c = createRESTConnector().use(consolidateIDs('_id'))
 ```
+
+Note that the middleware connectors do not need to implement all crud methods. If a middleware connector does not provide one of the crud methods, all pertinent requests will be automatically passed to the next connector in the chain.
