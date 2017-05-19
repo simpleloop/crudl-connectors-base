@@ -96,3 +96,34 @@ function transformData(methodRegExp, transform = data => data) {
 ```
 
 Note that the middleware connectors do not need to implement all crud methods. If a middleware connector does not provide one of the crud methods, all pertinent requests will be automatically passed to the next connector in the chain.
+
+The order of middleware matters. The last registered middleware is invoked first when making a request and last when processing a response. For example `c.use(mw1).use(mw2)` will result in the following chain/stack:
+```
+request   data     errors
+  ↓         ↑         ↑
++-----------------------+
+|  frontend connector   |
++-----------------------+
+  ↓         ↑         ↑         
+request  response  errors
+  ↓         ↑         ↑
++-----------------------+
+|          mw2          |
++-----------------------+
+  ↓         ↑         ↑         
+request  response  errors
+  ↓         ↑         ↑
++-----------------------+
+|          mw1          |
++-----------------------+
+  ↓         ↑         ↑         
+request  response  errors
+  ↓         ↑         ↑
++-----------------------+
+|   backend connector   |
++-----------------------+
+            ↕                  
+         ~~~~~~~           
+           API              
+         ~~~~~~~             
+```
