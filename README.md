@@ -72,22 +72,18 @@ published.read().then((publishedArticles) => {
 Middleware is a function that takes the next connector as its argument and returns a new connector. Consider the following middleware for transforming the response data:
 
 ```js
-// Creates a transformData middleware
-// methodRegExp: which methods should be transformed e.g. 'create|update'
-function transformData(methodRegExp, transformation = data => data) {
+function transformData(methodRegExp, transform = data => data) {
   const re = new RegExp(methodRegExp || '.*');
 
   // The middleware function
   return function transformDataMiddleware(next) {
-	// Checks if the call should be transformed. If yes, it applies the transformation
-	function checkAndTransform(methodName) {
-      return function(req) {
-	    return next[methodName](req).then(res => re.test(methodName)
-		    ? Object.assign(res, { data: transformation(res.data) })
-		    : res
-	    );
-	  };
+    // Checks if the call should be transformed. If yes, it applies the transform function
+    function checkAndTransform(method) {
+      return re.test(method)
+        ? req => next[method](req).then(res => Object.assign(res, { data: transform(res.data) }))
+        : req => next[method](req);
     }
+
     // The middleware connector:
     return {
       create: checkAndTransform('create'),
