@@ -27,11 +27,11 @@ c.update({ url: '/users/1', data: { lastName: 'Doe' } });
 c.read({ url: '/users/1/' }) // { id: 1, firstName: 'Jane', lastName: 'Doe' }
 ```
 
-You can bind connectors to specific endpoints using the `patternedURL` middleware. This middleware resolves the url pattern against the parameters passed to the connector.
+You can bind connectors to specific endpoints using the `url` middleware. This middleware resolves the url pattern against the parameters passed to the connector.
 
 ```js
-let user = c.use(patternedURL('/users/:id'));
-let blogEntry = c.use(patternedURL('/blogs/:blogId'));
+let user = c.use(url('/users/:id'));
+let blogEntry = c.use(url('/blogs/:blogId'));
 
 user(1).read() // { id: 1, firstName: 'Jane', lastName: 'Doe' }
 blogEntry(12).read() // { id: 12, userId: 1, title: 'How to write middleware' }
@@ -40,7 +40,7 @@ blogEntry(12).read() // { id: 12, userId: 1, title: 'How to write middleware' }
 Partial parametrization is also possible:
 
 ```js
-let detail = c.use(patternedURL('/:collection/:id'));
+let detail = c.use(url('/:collection/:id'));
 let user = detail('users') // The :collection is fixed to 'users' but :id is still open
 let blogEntry = detail('blogs') // The :collection is fixed to 'blogs' but :id is still open
 
@@ -61,7 +61,7 @@ You can extend the functionality of a connector with middleware:
 
 ```js
 const published = createFrontendConnector(createBackendConnector())
-  .use(patternedURL('localhost:3000/api/articles/'))
+  .use(url('localhost:3000/api/articles/'))
   .use(transformData('read', data => data.filter(item => item.published)))
 
 published.read().then((publishedArticles) => {

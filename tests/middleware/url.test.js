@@ -1,5 +1,5 @@
 /* globals require, jest, expect, describe, it */
-const patternedURL = require('../../lib/middleware/patternedURL');
+const url = require('../../lib/middleware/url');
 
 function requestTesterConnector(test) {
   return {
@@ -12,7 +12,7 @@ function requestTesterConnector(test) {
 
 describe('Correct path resolving', () => {
   it('resolves a non-patterned path `/simple/path`', () => {
-    const mw = patternedURL('/simple/path');
+    const mw = url('/simple/path');
 
     const tester = requestTesterConnector((req) => {
       expect(req.url).toBe('/simple/path');
@@ -25,7 +25,7 @@ describe('Correct path resolving', () => {
   });
 
   it('resolves a patterned path `/:foo/:bar`', () => {
-    const mw = patternedURL('/:foo/:bar');
+    const mw = url('/:foo/:bar');
 
     const tester = requestTesterConnector((req) => {
       expect(req.url).toBe('/hello/dolly');
@@ -39,7 +39,7 @@ describe('Correct path resolving', () => {
   });
 
   it('preseves the query `/:foo/:bar?user=1`', () => {
-    const mw = patternedURL('/:foo/:bar?user=1');
+    const mw = url('/:foo/:bar?user=1');
 
     const tester = requestTesterConnector((req) => {
       expect(req.url).toBe('/hello/dolly?user=1');
@@ -53,7 +53,7 @@ describe('Correct path resolving', () => {
   });
 
   it('can handle a complete URI `http://localhost:3000/:foo/:bar?user=1`', () => {
-    const mw = patternedURL('http://localhost:3000/:foo/:bar?user=1');
+    const mw = url('http://localhost:3000/:foo/:bar?user=1');
 
     const tester = requestTesterConnector((req) => {
       expect(req.url).toBe('http://localhost:3000/hello/dolly?user=1');
