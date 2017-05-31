@@ -1,4 +1,4 @@
-A connector layer to access any API uniformly using CRUD methods
+A connector layer to access any API uniformly using CRUD methods.
 
 ## Structure
 
@@ -102,25 +102,25 @@ The order of middleware matters. The last registered middleware is invoked first
 request   data     errors
   ↓         ↑         ↑
 +-----------------------+
-|  frontend connector   |
+|  FRONTEND CONNECTOR   |
 +-----------------------+
   ↓         ↑         ↑         
 request  response  errors
   ↓         ↑         ↑
 +-----------------------+
-|          mw2          |
+|          MW2          |
 +-----------------------+
   ↓         ↑         ↑         
 request  response  errors
   ↓         ↑         ↑
 +-----------------------+
-|          mw1          |
+|          MW1          |
 +-----------------------+
   ↓         ↑         ↑         
 request  response  errors
   ↓         ↑         ↑
 +-----------------------+
-|   backend connector   |
+|   BACKEND CONNECTOR   |
 +-----------------------+
             ↕                  
          ~~~~~~~           
