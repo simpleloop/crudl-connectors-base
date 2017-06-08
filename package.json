@@ -1,13 +1,32 @@
 {
-  "name": "crudl-connectors-base",
-  "version": "0.0.1",
+  "name": "@crudlio/crudl-connectors-base",
+  "version": "0.1.0",
   "description": "A connector layer to access any API uniformly using CRUD methods",
   "main": "index.js",
   "scripts": {
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crudlio/crudl-connectors-base.git"
+  },
+  "keywords": [
+    "admin",
+    "interface",
+    "api",
+    "crudl",
+  ],
+  "author": "vonautomatisch",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/crudlio/crudl-connectors-base/issues"
+  },
+  "homepage": "http://crudl.io",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "lib"
+  ],
   "devDependencies": {
     "babel-eslint": "^7.2.2",
     "eslint": "^3.19.0",
