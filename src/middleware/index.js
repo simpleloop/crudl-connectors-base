@@ -2,7 +2,7 @@ import crudToHttp from './crudToHttp'
 import url from './url'
 import transformData from './transformData'
 
-export default {
+export {
     crudToHttp,
     url,
     transformData,
