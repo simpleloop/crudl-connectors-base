@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios'
 
 /**
 * This is a general backend connector that uses axios to execute API calls.
@@ -9,7 +9,7 @@ const axios = require('axios');
 * data:       an object or an array; optional
 * headers:    an object of the form { <HeaderName>: <Value> }; optional
 */
-function createBackendConnector(axiosConfig = {}) {
+export default function createBackendConnector(axiosConfig = {}) {
   function axiosCall(req) {
     // URL is required
     if (typeof req.url !== 'string') {
@@ -38,5 +38,3 @@ function createBackendConnector(axiosConfig = {}) {
     delete: axiosCall,
   };
 }
-
-module.exports = createBackendConnector;

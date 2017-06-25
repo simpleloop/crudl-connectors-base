@@ -3,7 +3,7 @@
 * @methodRegExp Which methods should be transformed e.g. 'create|update'
 * @transform The transform function
 */
-function transformData(methodRegExp, transform = data => data) {
+export default function transformData(methodRegExp, transform = data => data) {
   const re = new RegExp(methodRegExp || '.*');
 
   // The middleware function
@@ -24,5 +24,3 @@ function transformData(methodRegExp, transform = data => data) {
     };
   };
 }
-
-module.exports = transformData;

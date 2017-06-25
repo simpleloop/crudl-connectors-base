@@ -1,5 +1,5 @@
 /* globals require, jest, expect, describe, it */
-const consumeParams = require('../lib/consumeParams');
+import consumeParams from '../src/consumeParams'
 
 it('consumes params correctly', () => {
   const req = {

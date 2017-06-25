@@ -1,5 +1,5 @@
 /* globals require, jest, expect, describe, it */
-const crudToHttp = require('../../lib/middleware/crudToHttp');
+import crudToHttp from '../../src/middleware/crudToHttp'
 
 function requestTesterConnector(test) {
   return {

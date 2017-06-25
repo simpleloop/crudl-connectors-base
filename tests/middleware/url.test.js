@@ -1,5 +1,5 @@
 /* globals require, jest, expect, describe, it */
-const url = require('../../lib/middleware/url');
+import url from '../../src/middleware/url'
 
 function requestTesterConnector(test) {
   return {

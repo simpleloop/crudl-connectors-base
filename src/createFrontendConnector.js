@@ -78,7 +78,7 @@ function completeConnector(partial = {}, full) {
   return partial;
 }
 
-module.exports = function createFrontendConnector(connector = {}, debug = false) {
+export default function createFrontendConnector(connector = {}, debug = false) {
   if (typeof connector.use !== 'undefined') {
     throw new Error(`The provided connector ${connector} is already a frontend connector. Only one frontend connector is allowed.`);
   }
@@ -104,4 +104,4 @@ module.exports = function createFrontendConnector(connector = {}, debug = false)
   }
 
   return fc;
-};
+}
