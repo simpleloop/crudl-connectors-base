@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.1.2 (Not yet published)
+* CHANGED: The code was rewritten to use ES6
+
 ## 0.1.1 (2017-06-12)
 * FIXED: docs about named package references
 
