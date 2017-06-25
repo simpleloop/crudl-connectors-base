@@ -2,8 +2,9 @@
   "name": "@crudlio/crudl-connectors-base",
   "version": "0.1.1",
   "description": "A connector layer to access any API uniformly using CRUD methods",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
+    "build": "babel src --out-dir lib",
     "test": "jest"
   },
   "repository": {
@@ -28,6 +29,7 @@
     "lib"
   ],
   "devDependencies": {
+    "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.2",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.1.0",
@@ -39,6 +41,7 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
+    "babel-preset-es2015": "^6.24.1",
     "path-to-regexp": "^1.7.0"
   }
 }

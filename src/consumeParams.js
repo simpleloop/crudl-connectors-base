@@ -1,5 +1,5 @@
 
-module.exports = function consumeParams(req, nParams) {
+export default function consumeParams(req, nParams) {
   if (nParams === 0) {
     return [];
   }
@@ -13,4 +13,4 @@ module.exports = function consumeParams(req, nParams) {
   }
 
   return req.params.splice(req.params.length - nParams);
-};
+}

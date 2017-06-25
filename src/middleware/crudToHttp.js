@@ -6,7 +6,7 @@ const defaultMapping = {
   delete: 'delete',
 };
 
-function crudToHttp(httpMethodMapping) {
+export default function crudToHttp(httpMethodMapping) {
   const crud2http = Object.assign({}, defaultMapping, httpMethodMapping);
 
   return function crudToHttpMiddleware(next) {
@@ -18,5 +18,3 @@ function crudToHttp(httpMethodMapping) {
     };
   };
 }
-
-module.exports = crudToHttp;

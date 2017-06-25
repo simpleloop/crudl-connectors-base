@@ -1,5 +1,5 @@
 /* globals require, jest, expect, describe, it */
-const transformData = require('../../lib/middleware/transformData');
+import transformData from '../../src/middleware/transformData'
 
 const response = {
   status: 200,

@@ -1,6 +1,6 @@
 /* globals require, jest, expect, describe, it, beforeEach */
-const createBackendConnector = require('../lib/createBackendConnector');
-const sinon = require('sinon');
+import sinon from 'sinon'
+import createBackendConnector from '../src/createBackendConnector'
 
 describe('Backend Connector', () => {
   beforeEach(() => {

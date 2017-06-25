@@ -1,6 +1,6 @@
 const { parse, format } = require('url');
-const pathToRegexp = require('path-to-regexp');
-const consumeParams = require('../consumeParams');
+import pathToRegexp from 'path-to-regexp'
+import consumeParams from '../consumeParams'
 
 function resolveParams(path, req) {
   const resolved = {};
@@ -31,7 +31,7 @@ function resolvePath(path, req) {
 }
 
 
-function url(path) {
+export default function url(path) {
   return function urlMiddleware(next) {
     return {
       create: (req) => { req.url = resolvePath(path, req); return next.create(req); },
@@ -41,5 +41,3 @@ function url(path) {
     };
   };
 }
-
-module.exports = url;

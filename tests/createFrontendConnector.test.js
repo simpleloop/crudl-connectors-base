@@ -1,5 +1,5 @@
 /* globals require, jest, expect, describe, it */
-const createFrontendConnector = require('../lib/createFrontendConnector');
+import createFrontendConnector from '../src/createFrontendConnector'
 
 // Creates a simple jest connector
 function createJestConnector() {
