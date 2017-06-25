@@ -5,6 +5,8 @@
   "main": "./lib/index.js",
   "scripts": {
     "build": "babel src --out-dir lib",
+    "clean": "rimraf lib",
+    "prepublish": "npm run test && npm run clean && npm run build",
     "test": "jest"
   },
   "repository": {
@@ -37,6 +39,7 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
     "jest": "^19.0.2",
+    "rimraf": "^2.6.1",
     "sinon": "^2.1.0"
   },
   "dependencies": {
