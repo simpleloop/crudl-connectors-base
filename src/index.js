@@ -3,7 +3,7 @@ import createBackendConnector from './createBackendConnector'
 import consumeParams from './consumeParams'
 
 export {
-  createFrontendConnector,
-  createBackendConnector,
-  consumeParams
+    createFrontendConnector,
+    createBackendConnector,
+    consumeParams
 }

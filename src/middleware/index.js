@@ -3,7 +3,7 @@ import url from './url'
 import transformData from './transformData'
 
 export default {
-  crudToHttp,
-  url,
-  transformData,
+    crudToHttp,
+    url,
+    transformData,
 }

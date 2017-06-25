@@ -10,31 +10,31 @@ import axios from 'axios'
 * headers:    an object of the form { <HeaderName>: <Value> }; optional
 */
 export default function createBackendConnector(axiosConfig = {}) {
-  function axiosCall(req) {
-    // URL is required
-    if (typeof req.url !== 'string') {
-      throw new Error(`The request URL must be a string. Found ${typeof req.url}`)
-    }
-    // http method is required
-    if (typeof req.httpMethod !== 'string') {
-      throw new Error(`The request httpMethod must be a string. Found ${typeof req.httpMethod}`)
+    function axiosCall(req) {
+        // URL is required
+        if (typeof req.url !== 'string') {
+            throw new Error(`The request URL must be a string. Found ${typeof req.url}`)
+        }
+        // http method is required
+        if (typeof req.httpMethod !== 'string') {
+            throw new Error(`The request httpMethod must be a string. Found ${typeof req.httpMethod}`)
+        }
+
+        return axios(Object.assign(axiosConfig, {
+            url: req.url,
+            method: req.httpMethod,
+            headers: req.headers,
+            data: req.data,
+        }))
+        .catch((error) => {
+            throw error.response
+        })
     }
 
-    return axios(Object.assign(axiosConfig, {
-      url: req.url,
-      method: req.httpMethod,
-      headers: req.headers,
-      data: req.data,
-    }))
-    .catch((error) => {
-      throw error.response
-    })
-  }
-
-  return {
-    create: axiosCall,
-    read: axiosCall,
-    update: axiosCall,
-    delete: axiosCall,
-  }
+    return {
+        create: axiosCall,
+        read: axiosCall,
+        update: axiosCall,
+        delete: axiosCall,
+    }
 }
