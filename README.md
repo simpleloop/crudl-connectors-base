@@ -11,7 +11,7 @@ The simplest configuration of a connector is a backend-frontend pair. The backen
 Using just the basic frontend-backend pair you can swiftly create a functioning connector:
 
 ```js
-const { createFrontendConnector, createBackendConnector } = require('@crudlio/crudl-connectors-base');
+import { createFrontendConnector, createBackendConnector } from '@crudlio/crudl-connectors-base';
 
 let c = createFrontendConnector(createBackendConnector({ baseURL: 'localhost:3000/api/v1/' }));
 c.create({ url: '/users/', httpMethod: 'post', data: { firstName: 'Jane' }});

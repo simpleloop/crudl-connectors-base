@@ -1,4 +1,4 @@
-const { parse, format } = require('url');
+import { parse, format } from 'url'
 import pathToRegexp from 'path-to-regexp'
 import consumeParams from '../consumeParams'
 
