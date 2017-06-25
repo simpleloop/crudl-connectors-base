@@ -13,11 +13,11 @@ export default function createBackendConnector(axiosConfig = {}) {
   function axiosCall(req) {
     // URL is required
     if (typeof req.url !== 'string') {
-      throw new Error(`The request URL must be a string. Found ${typeof req.url}`);
+      throw new Error(`The request URL must be a string. Found ${typeof req.url}`)
     }
     // http method is required
     if (typeof req.httpMethod !== 'string') {
-      throw new Error(`The request httpMethod must be a string. Found ${typeof req.httpMethod}`);
+      throw new Error(`The request httpMethod must be a string. Found ${typeof req.httpMethod}`)
     }
 
     return axios(Object.assign(axiosConfig, {
@@ -27,8 +27,8 @@ export default function createBackendConnector(axiosConfig = {}) {
       data: req.data,
     }))
     .catch((error) => {
-      throw error.response;
-    });
+      throw error.response
+    })
   }
 
   return {
@@ -36,5 +36,5 @@ export default function createBackendConnector(axiosConfig = {}) {
     read: axiosCall,
     update: axiosCall,
     delete: axiosCall,
-  };
+  }
 }

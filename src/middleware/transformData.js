@@ -4,7 +4,7 @@
 * @transform The transform function
 */
 export default function transformData(methodRegExp, transform = data => data) {
-  const re = new RegExp(methodRegExp || '.*');
+  const re = new RegExp(methodRegExp || '.*')
 
   // The middleware function
   return function transformDataMiddleware(next) {
@@ -12,7 +12,7 @@ export default function transformData(methodRegExp, transform = data => data) {
     function checkAndTransform(method) {
       return re.test(method)
         ? req => next[method](req).then(res => Object.assign(res, { data: transform(res.data) }))
-        : req => next[method](req);
+        : req => next[method](req)
     }
 
     // The middleware connector:
@@ -21,6 +21,6 @@ export default function transformData(methodRegExp, transform = data => data) {
       read: checkAndTransform('read'),
       update: checkAndTransform('update'),
       delete: checkAndTransform('delete'),
-    };
-  };
+    }
+  }
 }

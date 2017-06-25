@@ -3,30 +3,30 @@ import pathToRegexp from 'path-to-regexp'
 import consumeParams from '../consumeParams'
 
 function resolveParams(path, req) {
-  const resolved = {};
-  const keys = [];
-  pathToRegexp(path, keys);
+  const resolved = {}
+  const keys = []
+  pathToRegexp(path, keys)
 
-  const params = consumeParams(req, keys.length);
+  const params = consumeParams(req, keys.length)
 
   // Take the keys and associate them with the request params
   keys.forEach((key, index) => {
-    resolved[key.name] = params[index];
-  });
+    resolved[key.name] = params[index]
+  })
 
-  return resolved;
+  return resolved
 }
 
 function resolvePath(path, req) {
   try {
-    const parsed = parse(path, true);
-    const params = resolveParams(parsed.pathname, req);
+    const parsed = parse(path, true)
+    const params = resolveParams(parsed.pathname, req)
 
-    parsed.pathname = pathToRegexp.compile(parsed.pathname)(params);
+    parsed.pathname = pathToRegexp.compile(parsed.pathname)(params)
 
-    return format(parsed);
+    return format(parsed)
   } catch (e) {
-    throw new Error(`Could not resolve the url path '${path}'. (${e}).`);
+    throw new Error(`Could not resolve the url path '${path}'. (${e}).`)
   }
 }
 
@@ -38,6 +38,6 @@ export default function url(path) {
       read: (req) => { req.url = resolvePath(path, req); return next.read(req); },
       update: (req) => { req.url = resolvePath(path, req); return next.update(req); },
       delete: (req) => { req.url = resolvePath(path, req); return next.delete(req); },
-    };
-  };
+    }
+  }
 }
