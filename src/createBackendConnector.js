@@ -20,10 +20,15 @@ export default function createBackendConnector(axiosConfig = {}) {
             throw new Error(`The request httpMethod must be a string. Found ${typeof req.httpMethod}`)
         }
 
+        let requestHeaders = req.headers
+        if (axiosConfig.headers) {
+            requestHeaders = Object.assign({}, axiosConfig.headers, req.headers)
+        }
+
         return axios(Object.assign(axiosConfig, {
             url: req.url,
             method: req.httpMethod,
-            headers: req.headers,
+            headers: requestHeaders,
             data: req.data,
         }))
         .catch((error) => {

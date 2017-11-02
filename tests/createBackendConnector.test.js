@@ -78,6 +78,18 @@ describe('Backend Connector', () => {
         });
     });
 
+    it('axios headers overwrite', () => {
+        const connector = createBackendConnector({
+            headers: { Accept: 'application/json' }
+        })
+
+        return connector.read({ url: '/api/list/', httpMethod: 'get', headers: { userToken: 'x62bkdds62' } })
+        .then((response) => {
+            expect(response.request.requestHeaders.userToken).toBe('x62bkdds62');
+            expect(response.request.requestHeaders.Accept).toBe('application/json');
+        });
+    })
+
     it('handles baseURL', () => {
         const connector = createBackendConnector({
             baseURL: '/api/',
