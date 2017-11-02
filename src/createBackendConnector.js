@@ -22,7 +22,7 @@ export default function createBackendConnector(axiosConfig = {}) {
 
         let requestHeaders = req.headers
         if (axiosConfig.headers) {
-            requestHeaders = Object.assign({}, req.headers, axiosConfig.headers)
+            requestHeaders = Object.assign({}, axiosConfig.headers, req.headers)
         }
 
         return axios(Object.assign(axiosConfig, {
